@@ -2,9 +2,7 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches:
-      - dev
-      - main
+    branches: [ main ]
 
 jobs:
   build:
@@ -28,47 +26,3 @@ jobs:
           docker build -t test-cicd .
           docker tag test-cicd chaeyeon1234/test-cicd:${GITHUB_SHA::7}
           docker push chaeyeon1234/test-cicd:${GITHUB_SHA::7}
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-  .
