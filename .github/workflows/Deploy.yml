@@ -23,9 +23,9 @@ jobs:
       - name: Docker build
         run: |
           docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
-          docker build -t test-cicd .
-          docker tag test-cicd chaeyeon1234/test-cicd:${GITHUB_SHA::7}
-          docker push chaeyeon1234/test-cicd:${GITHUB_SHA::7}
+          docker build -t next-pick .
+          docker tag next-pick chaeyeon1234/next-pick:${GITHUB_SHA::7}
+          docker push chaeyeon1234/next-pick:${GITHUB_SHA::7}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -33,8 +33,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
-      - name: Start Session Manager session
-        run: aws ssm start-session --target i-033edd1796659d673
+
+      # Start Session이 실패할 가능성이 높기 때문에 생략 가능
+      # - name: Start Session Manager session
+      #   run: aws ssm start-session --target i-060f949b84e77e10a
+
       - name: Deploy to Server
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
@@ -45,12 +48,12 @@ jobs:
             --instance-ids i-033edd1796659d673 \
             --document-name "AWS-RunShellScript" \
             --parameters "commands=[
-              'if sudo docker ps -a --format \\'{{.Names}}\\' | grep -q \\'^server$\\'; then',
+              'if sudo docker ps -a --format \"{{.Names}}\" | grep -q \"^server$\"; then',
               '  sudo docker stop server',
               '  sudo docker rm server',
               'fi',
-              'sudo docker pull chaeyeon1234/test-cicd:${GITHUB_SHA::7}',
-              'sudo docker tag chaeyeon1234/test-cicd:${GITHUB_SHA::7} test-cicd',
-              'sudo docker run -d --name server -p 8080:8080 test-cicd'
+              'sudo docker pull chaeyeon1234/next-pick:${GITHUB_SHA::7}',
+              'sudo docker tag chaeyeon1234/next-pick:${GITHUB_SHA::7} next-pick',
+              'sudo docker run -d --name server -p 8080:8080 next-pick'
             ]" \
             --output text
