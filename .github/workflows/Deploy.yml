@@ -23,9 +23,9 @@ jobs:
       - name: Docker build
         run: |
           docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
-          docker build -t next-pick .
-          docker tag next-pick chaeyeon1234/next-pick:${GITHUB_SHA::7}
-          docker push chaeyeon1234/next-pick:${GITHUB_SHA::7}
+          docker build -t test-cicd .
+          docker tag test-cicd chaeyeon1234/test-cicd:${GITHUB_SHA::7}
+          docker push chaeyeon1234/test-cicd:${GITHUB_SHA::7}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -52,8 +52,8 @@ jobs:
               '  sudo docker stop server',
               '  sudo docker rm server',
               'fi',
-              'sudo docker pull chaeyeon1234/next-pick:${GITHUB_SHA::7}',
-              'sudo docker tag chaeyeon1234/next-pick:${GITHUB_SHA::7} next-pick',
-              'sudo docker run -d --name server -p 8080:8080 next-pick'
+              'sudo docker pull chaeyeon1234/test-cicd:${GITHUB_SHA::7}',
+              'sudo docker tag chaeyeon1234/test-cicd:${GITHUB_SHA::7} test-cicd',
+              'sudo docker run -d --name server -p 8080:8080 test-cicd'
             ]" \
             --output text
